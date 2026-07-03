@@ -4,9 +4,13 @@ Projeto desenvolvido para a disciplina de **Projeto de Sistemas Embutidos** do C
 
 ---
 
-O consumo de energia elétrica residencial é, em grande parte, invisível ao usuário final: a conta de luz mostra apenas um valor mensal agregado, sem indicar quais aparelhos são responsáveis pela maior parcela do gasto. Essa falta de visibilidade dificulta a identificação de desperdícios e a tomada de decisões conscientes sobre o uso da energia em casa.
+O consumo de energia elétrica residencial é, em grande parte, invisível ao usuário final: a conta de luz mostra apenas um valor mensal agregado, sem indicar quais aparelhos são responsáveis pela maior parcela do gasto. Essa falta de visibilidade dificulta a identificação de desperdícios e torna quase impossível tomar decisões conscientes sobre o uso da energia — como identificar um aparelho com consumo acima do esperado por mau funcionamento, ou simplesmente entender como hábitos do dia a dia se traduzem em custo.
 
-O **EcoPlug** foi criado para preencher essa lacuna. Trata-se de uma tomada inteligente que mede tensão, corrente, potência e energia acumulada de qualquer aparelho conectado, e disponibiliza essas informações em tempo real por meio de uma interface web — acessível de qualquer dispositivo na rede. O sistema também permite ligar e desligar remotamente a tomada, sinaliza seu estado por LEDs indicadores e suporta múltiplas tomadas monitoradas simultaneamente.
+O **EcoPlug** foi criado para preencher essa lacuna. Trata-se de uma tomada inteligente que, ao ser inserida entre a tomada da parede e o aparelho, passa a medir continuamente tensão, corrente, potência ativa e energia acumulada — com erro inferior a 5%. Esses dados são enviados a cada 5 segundos para um servidor em nuvem e exibidos em tempo real em uma interface web acessível de qualquer dispositivo na rede.
+
+Além do monitoramento, o sistema permite ligar e desligar remotamente a tomada, registra o histórico de consumo por hora, gera gráficos de potência e estimativa de custo em reais, e sinaliza o estado do dispositivo por LEDs indicadores. O protótipo suporta múltiplas tomadas monitoradas simultaneamente e é configurado via portal Wi-Fi, sem necessidade de programação pelo usuário final.
+
+O hardware foi desenvolvido em torno de um ESP32, com o módulo PZEM-004T para medição elétrica, relé para controle do acionamento e um invólucro impresso em 3D. O backend roda em FastAPI com banco de dados PostgreSQL hospedado na Oracle Cloud, e o frontend foi desenvolvido em React.
 
 ## Imagens
 
