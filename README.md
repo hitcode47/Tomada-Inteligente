@@ -4,7 +4,16 @@ Sistema completo de monitoramento e controle de tomadas inteligentes com mediç�
 
 ## Imagens
 
-> Coloque screenshots e fotos do hardware na pasta [`imagens/`](imagens/)
+| | |
+|---|---|
+| ![Hardware em uso](imagens/hardware-em-uso.jpeg) | ![Painel frontal](imagens/caixa-painel.jpeg) |
+| Protótipo em bancada com dashboard no navegador | Painel frontal: botão de reset, chave e LEDs de status |
+| ![Entrada AC](imagens/caixa-entrada.jpeg) | ![Saída AC](imagens/caixa-saida.jpeg) |
+| Caixa fechada — entrada de energia (plug macho) | Lateral com tomada de saída (fêmea) |
+
+### Esquemático elétrico
+
+![Esquemático elétrico](imagens/esquematico-eletrico.png)
 
 ## Arquitetura
 
@@ -164,7 +173,3 @@ O backend roda em Oracle Cloud (Ubuntu 22.04) com FastAPI + Uvicorn gerenciado p
 
 - Bruno dos Santos Lopes
 - Heitor Franco C. Linhares
-
-## Licença
-
-MIT
