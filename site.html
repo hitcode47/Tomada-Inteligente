@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoPlugWeb - Tomada Inteligente</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>EcoPlugWeb</h1>
+            <div class="connection-status">
+                <span id="status-indicator" class="status-dot online"></span>
+                <span id="status-text">Online</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+
+            <!-- Seção de Gerenciamento de Tomadas -->
+            <section class="management-section">
+                <h2>Gerenciamento de Tomadas</h2>
+                <div class="management-container">
+                    <div class="management-card">
+                        <h3>Adicionar Tomada</h3>
+                        <input type="text" id="new-socket-name" placeholder="Nome da tomada">
+                        <button id="add-socket-btn" class="btn btn-add">Adicionar</button>
+                    </div>
+                    <div class="management-card">
+                        <h3>Deletar Tomada</h3>
+                        <select id="delete-socket-select">
+                            <option value="">Selecione uma tomada</option>
+                        </select>
+                        <button id="delete-socket-btn" class="btn btn-delete">Deletar</button>
+                    </div>
+                    <div class="management-card">
+                        <h3>Configurar Tomada</h3>
+                        <select id="config-socket-select">
+                            <option value="">Selecione uma tomada</option>
+                        </select>
+                        <input type="text" id="config-socket-name" placeholder="Novo nome">
+                        <button id="config-socket-btn" class="btn btn-config">Configurar</button>
+                    </div>
+                </div>
+            </section>
+            <!-- Card de Controle -->
+            <section class="control-section">
+                <h2>Controle das Tomadas</h2>
+                <div class="control-grid">
+                    <!-- Tomadas -->
+                </div>
+            </section>
+
+            <!-- Grid de Monitoramento -->
+            <section class="monitoring-section">
+                <h2>Monitoramento em Tempo Real</h2>
+                
+                <!-- Filtro de Seleção de Tomadas -->
+                <div class="socket-filter">
+                    <h3>Selecionar Tomadas para Monitorar</h3>
+                    <div id="socket-checklist" class="checklist-container">
+                        <! -- Checkboxes serão gerados dinamicamente aqui -- > 
+                    </div>
+                </div>
+
+                <div class="monitoring-grid">
+                    <div class="metric-card">
+                        <h3>Tensão</h3>
+                        <p id="current-voltage" class="metric-value">0.0</p>
+                        <span class="metric-unit">V</span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Corrente</h3>
+                        <p id="current-amperage" class="metric-value">0.0</p>
+                        <span class="metric-unit">A</span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Potência Atual</h3>
+                        <p id="current-power" class="metric-value">0.0</p>
+                        <span class="metric-unit">W</span>
+                    </div>
+                </div>
+            </section>
+            <!-- Seção de Filtro para Gráfico -->
+            <section class="chart-filter-section">
+                <h2>Histórico de Consumo</h2>
+                <div class="chart-filter">
+                    <h3>Selecionar Tomadas para Análise</h3>
+                    <div id="chart-socket-checklist" class="checklist-container">
+                        <! -- Checkboxes serão gerados dinamicamente aqui -- >
+                    </div>
+                    <button id="update-chart-btn" class="btn btn-primary">Atualizar Gráfico</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="consumption-chart"></canvas>
+                </div>
+            </section>
+            <!-- Seção de Logs/Histórico -->
+            <section class="history-section">
+                <h2>Últimas Ativações</h2>
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Ação</th>
+                                <th>Consumo (W)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-list">
+                            <tr>
+                                <td>--</td>
+                                <td>--</td>
+                                <td>--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

@@ -1,47 +1,57 @@
-# Tomada Inteligente - EcoPlugWeb
+# EcoPlug — Tomada Inteligente
 
 Sistema completo de monitoramento e controle de tomadas inteligentes com medição de energia em tempo real.
 
-## 🏗️ Arquitetura
+## Imagens
+
+> Coloque screenshots e fotos do hardware na pasta [`imagens/`](imagens/)
+
+## Arquitetura
 
 ```
 ┌──────────────────────────────────────────────────┐
-│                   Hardware (ESP32)               │
-│        + PZEM-004T (Medidor de Energia)         │
-│        + WiFi Enterprise (UFMG/Eduroam)        │
+│              Hardware (ESP32 + PZEM-004T)        │
+│   - Mede tensão, corrente, potência, energia     │
+│   - WiFi Enterprise (WPA2-EAP / UFMG)           │
+│   - Relé NC para controle da tomada             │
 └──────────────────┬───────────────────────────────┘
-                   │ POST JSON (5s)
+                   │ POST JSON a cada 5s
                    ↓
 ┌──────────────────────────────────────────────────┐
-│         Backend (Flask - Python)                 │
-│      /api/energia/<serial_number>               │
-│      - Recebe dados do hardware                 │
-│      - Armazena histórico em memória            │
+│         Backend (FastAPI + PostgreSQL)           │
+│   - Armazena leituras no banco de dados         │
+│   - Autenticação JWT                            │
+│   - API REST: energia, dispositivos, gráficos   │
 └──────────────────┬───────────────────────────────┘
-                   │ GET JSON (polling)
+                   │ GET JSON (polling 5s)
                    ↓
 ┌──────────────────────────────────────────────────┐
-│         Frontend (React - JavaScript)            │
-│      - Dashboard em tempo real                  │
-│      - Gráficos de consumo                      │
-│      - Gerenciamento de tomadas                 │
-└──────────────────┬───────────────────────────────┘
-                   │
-                   ↓
-            📊 Navegador
+│         Frontend (React + Vite)                  │
+│   - Dashboard em tempo real                     │
+│   - Gráficos de consumo (potência / custo)      │
+│   - Gerenciamento e controle de tomadas         │
+└──────────────────────────────────────────────────┘
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 Tomada-Inteligente/
 ├── Backend/
-│   ├── app.py                 # Servidor Flask
-│   ├── test_backend.py        # Script para testar com dados simulados
-│   └── requirements.txt       # Dependências Python
+│   ├── main.py                # Servidor FastAPI
+│   ├── models.py              # Modelos SQLAlchemy
+│   ├── schemas.py             # Schemas Pydantic
+│   ├── database.py            # Conexão PostgreSQL
+│   ├── security.py            # JWT e autenticação
+│   ├── routers/
+│   │   ├── auth.py            # Login / registro
+│   │   ├── devices.py         # CRUD de dispositivos
+│   │   └── energia.py         # Leituras e gráficos
+│   ├── requirements.txt
+│   └── .env.example
 ├── Frontend/
 │   ├── src/
-│   │   ├── components/        # Componentes React
+│   │   ├── components/
 │   │   │   ├── Header.jsx
 │   │   │   ├── ManagementSection.jsx
 │   │   │   ├── ControlSection.jsx
@@ -49,204 +59,112 @@ Tomada-Inteligente/
 │   │   │   ├── ChartFilterSection.jsx
 │   │   │   └── HistorySection.jsx
 │   │   ├── pages/
-│   │   │   └── HomePage.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   └── LoginPage.jsx
 │   │   ├── hooks/
 │   │   │   └── useSockets.js
 │   │   ├── services/
-│   │   │   └── socketService.js
+│   │   │   ├── socketService.js
+│   │   │   └── authService.js
 │   │   ├── config.js
 │   │   ├── App.jsx
-│   │   ├── App.css
 │   │   └── main.jsx
-│   ├── .env                   # Variáveis de ambiente
+│   ├── .env.production
 │   ├── package.json
 │   └── vite.config.js
 ├── hardware/
-│   └── PZEM-004T-NodeMCU_Testing/
-│       └── PZEM-004T-NodeMCU_Testing.ino
-├── Banco de Dados/
-├── start.bat                  # Script para iniciar (Windows)
-├── start.sh                   # Script para iniciar (Unix/Mac)
-├── INTEGRACAO.md             # Guia detalhado de integração
-└── README.md                 # Este arquivo
+│   └── controle.ino           # Firmware ESP32
+├── imagens/                   # Screenshots e fotos do hardware
+└── README.md
 ```
 
-## 🚀 Quick Start
+## Hardware
 
-### Pré-requisitos
-- Python 3.8+
-- Node.js 16+
-- npm ou yarn
+| Componente | Função |
+|---|---|
+| ESP32 | Controlador principal + WiFi |
+| PZEM-004T | Medidor de tensão, corrente, potência e energia |
+| Relé NC | Controle da tomada (fail-safe: ligada sem energia) |
+| LED vermelho (GPIO 22) | Sistema energizado; pisca 3x no reset |
+| LED verde (GPIO 23) | WiFi conectado |
+| Botão (GPIO 5) | Reset de fábrica (segurar 5s) |
 
-### Iniciação Rápida (Windows)
+**Especificações:**
+- Tensão medida: 80–260 V CA
+- Corrente máxima: 10 A (CT embutido do PZEM-004T)
+- Intervalo de envio: 5 segundos
+- Conexão: WPA2-Enterprise (EAP-PEAP)
+
+## Configuração do Hardware
+
+1. Ligar o ESP32 pela primeira vez
+2. Conectar ao AP `Tomada-Setup` (senha: `12345678`)
+3. Acessar `http://192.168.4.1`
+4. Preencher SSID, usuário e senha da rede
+5. O dispositivo reinicia e começa a enviar dados
+
+Para redefinir as credenciais: segurar o botão de reset por 5 segundos.
+
+## Configuração do Backend
 
 ```bash
-# Duplo clique em start.bat
-start.bat
-```
-
-Ou manualmente:
-
-```bash
-# Terminal 1 - Backend
 cd Backend
+cp .env.example .env      # preencher DATABASE_URL e SECRET_KEY
 pip install -r requirements.txt
-python app.py
+uvicorn main:app --host 0.0.0.0 --port 5000
+```
 
-# Terminal 2 - Frontend
+## Configuração do Frontend
+
+```bash
 cd Frontend
 npm install
+# Desenvolvimento
 npm run dev
+
+# Produção
+npm run build             # gera dist/
 ```
 
-### Iniciação Rápida (Linux/Mac)
-
-```bash
-chmod +x start.sh
-./start.sh
-```
-
-## 🌐 Acessar a Aplicação
-
-- **Frontend:** http://localhost:5173
-- **Backend API:** http://localhost:5000
-
-## 📊 Endpoints da API
-
-### Receber dados do ESP32
-```
-POST /api/energia/<serial_number>
-Content-Type: application/json
-
-{
-  "voltage": 230.5,
-  "current": 1.25,
-  "power": 288.1,
-  "frequency": 60.0,
-  "pf": 0.95
-}
-```
-
-### Obter último registro
-```
-GET /api/energia/<serial_number>
-```
-
-### Obter histórico completo
-```
-GET /api/energia/<serial_number>/history
-```
-
-## 🧪 Testar com Dados Simulados
-
-```bash
-cd Backend
-python test_backend.py
-```
-
-Isso irá:
-1. Criar histórico de 10 registros para cada tomada
-2. Enviar dados simulados a cada 5 segundos
-3. Exibir o histórico no console
-
-## ⚙️ Configuração do Hardware
-
-### ESP32 - Configurar IP do Backend
-
-Editar `PZEM-004T-NodeMCU_Testing.ino`:
-
-```cpp
-// Mudar para o IP da sua máquina executando o Backend
-serverUrl = "http://192.168.0.105:5000/api/energia/" + SERIAL_NUMBER;
-```
-
-### WiFi Enterprise (UFMG/Eduroam)
-
-O hardware se conecta automaticamente via portal de configuração:
-1. Conectar ao AP `Tomada-Setup` (senha: `12345678`)
-2. Acessar `192.168.4.1`
-3. Inserir credenciais de WiFi Enterprise
-4. Dispositivo se conecta e começa a enviar dados
-
-## 🔧 Configuração do Frontend
-
-Editar `Frontend/.env`:
+Editar `Frontend/.env.production` para apontar para o servidor:
 
 ```env
-VITE_API_BASE_URL=http://localhost:5000
+VITE_API_BASE_URL=http://seu-servidor:5000
 ```
 
-Para produção com IP diferente:
-```env
-VITE_API_BASE_URL=http://seu-servidor.com.br:5000
-```
+## Deploy (Produção)
 
-## 📱 Funcionalidades
+O backend roda em Oracle Cloud (Ubuntu 22.04) com FastAPI + Uvicorn gerenciado pelo systemd e nginx como proxy reverso. O frontend é servido como site estático pelo nginx.
 
-### Dashboard
-- ✓ Status de conexão em tempo real
-- ✓ Métricas: Tensão, Corrente, Potência
-- ✓ Histórico de últimas ativações
+## Endpoints principais da API
 
-### Gerenciamento
-- ✓ Adicionar/remover tomadas
-- ✓ Renomear tomadas
-- ✓ Controle on/off
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/api/auth/register` | Cadastro de usuário |
+| POST | `/api/auth/login` | Login (retorna JWT) |
+| GET | `/api/devices/` | Listar dispositivos |
+| POST | `/api/devices/claim` | Vincular dispositivo |
+| PATCH | `/api/devices/{serial}` | Renomear dispositivo |
+| DELETE | `/api/devices/{serial}` | Desvincular dispositivo |
+| POST | `/api/devices/{serial}/relay` | Acionar relé |
+| POST | `/api/energia/{serial}` | Receber leitura do ESP32 |
+| GET | `/api/energia/{serial}` | Última leitura |
+| GET | `/api/energia/{serial}/chart` | Dados para gráfico |
 
-### Monitoramento
-- ✓ Gráfico de consumo
-- ✓ Seleção de tomadas para análise
-- ✓ Histórico completo
+## Próximos Passos
 
-## 🔄 Fluxo de Dados em Tempo Real
+- [ ] Autenticação do dispositivo com token fixo no header HTTP
+- [ ] Alertas por e-mail quando consumo exceder limite configurado
+- [ ] Exportar histórico de consumo em CSV
+- [ ] Suporte a WPA2 pessoal (além de Enterprise) no portal de configuração
+- [ ] App mobile (React Native ou PWA)
+- [ ] Controle por múltiplos relés (tomada com múltiplas saídas)
 
-1. **ESP32** envia dados a cada 5 segundos
-2. **Backend** recebe e armazena na memória
-3. **Frontend** faz polling a cada 5 segundos
-4. **UI** atualiza com últimos dados
+## Autores
 
-Tempo total: ~50ms de latência
+- Bruno dos Santos Lopes
+- Heitor Franco C. Linhares
 
-## 🐛 Troubleshooting
-
-**Frontend não conecta ao Backend:**
-- Verificar se Backend está rodando em `http://localhost:5000`
-- Atualizar `.env` com IP correto
-- Limpar cache do navegador
-
-**CORS Error:**
-- Backend já tem CORS configurado
-- Se persistir, editar `app.py` para adicionar headers específicos
-
-**Dados não atualizam:**
-- Verificar console do navegador (F12)
-- Verificar se `test_backend.py` está enviando dados
-
-**ESP32 não conecta:**
-- Verificar SSID e senha do WiFi
-- Verificar IP do Backend
-- Serial monitor do Arduino IDE para debug
-
-## 📚 Próximos Passos
-
-- [ ] Implementar banco de dados (SQLite/PostgreSQL)
-- [ ] Autenticação com JWT
-- [ ] WebSockets para atualização em tempo real
-- [ ] Gráficos com Chart.js
-- [ ] Controle real das tomadas (relay)
-- [ ] Alertas e notificações
-- [ ] Histórico persistente
-- [ ] Exportar dados em CSV
-
-## 📄 Licença
+## Licença
 
 MIT
-
-## 👤 Autor
-
-Bruno - 2026
-
----
-
-Para mais detalhes, ver `INTEGRACAO.md`
-

@@ -1,0 +1,23 @@
+# Chaves e segredos
+*.key
+*.pem
+
+# Ambientes virtuais Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Build do frontend
+Frontend/dist/
+
+# Variáveis de ambiente (contém senhas)
+Backend/.env
+
+*.key
+
+*.key
+
+*.key
