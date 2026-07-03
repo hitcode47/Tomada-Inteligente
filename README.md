@@ -1,6 +1,8 @@
 # EcoPlug — Tomada Inteligente
 
-Sistema completo de monitoramento e controle de tomadas inteligentes com medição de energia em tempo real.
+Projeto desenvolvido para a disciplina de **Projeto de Sistemas Embutidos** do Curso de Graduação em Engenharia Elétrica da **Universidade Federal de Minas Gerais (UFMG)**.
+
+O EcoPlug é uma tomada inteligente capaz de medir tensão, corrente, potência e energia acumulada de um aparelho conectado, disponibilizar essas informações ao usuário por meio de uma interface web e permitir o controle remoto do acionamento (ligar/desligar). O sistema sinaliza seu estado por LEDs indicadores e suporta múltiplas tomadas simultaneamente.
 
 ## Imagens
 
@@ -92,17 +94,22 @@ Tomada-Inteligente/
 | Componente | Função |
 |---|---|
 | ESP32 | Controlador principal + WiFi |
-| PZEM-004T | Medidor de tensão, corrente, potência e energia |
-| Relé NC | Controle da tomada (fail-safe: ligada sem energia) |
+| PZEM-004T | Medidor de tensão, corrente, potência e energia (com núcleo toroidal para leitura de corrente) |
+| Relé NC | Controle da tomada (fail-safe: ligada sem energia no relé) |
 | LED vermelho (GPIO 22) | Sistema energizado; pisca 3x no reset |
 | LED verde (GPIO 23) | WiFi conectado |
 | Botão (GPIO 5) | Reset de fábrica (segurar 5s) |
 
+O circuito é montado dentro de um **invólucro impresso em 3D** (cor azul), com entrada de energia (plugue macho) e saída para o aparelho (tomada fêmea) expostos externamente. A eletrônica de controle é alimentada de forma autônoma, independente da carga monitorada.
+
 **Especificações:**
 - Tensão medida: 80–260 V CA
 - Corrente máxima: 10 A (CT embutido do PZEM-004T)
-- Intervalo de envio: 5 segundos
-- Conexão: WPA2-Enterprise (EAP-PEAP)
+- Amostragem interna do sensor: ~1 s
+- Intervalo de envio ao servidor: 5 s
+- Atualização da interface web: ~5 s (polling)
+- Erro de medição: < 5%
+- Conexão: WPA2-Enterprise (EAP-PEAP) — compatível com redes institucionais (UFMG/Eduroam)
 
 ## Configuração do Hardware
 
@@ -162,14 +169,15 @@ O backend roda em Oracle Cloud (Ubuntu 22.04) com FastAPI + Uvicorn gerenciado p
 
 ## Próximos Passos
 
-- [ ] Autenticação do dispositivo com token fixo no header HTTP
+- [x] Gráfico de custo em reais por período (já implementado na interface)
+- [ ] Validação com múltiplas tomadas operando simultaneamente em campo
 - [ ] Alertas por e-mail quando consumo exceder limite configurado
+- [ ] Autenticação do dispositivo com token fixo no header HTTP
 - [ ] Exportar histórico de consumo em CSV
 - [ ] Suporte a WPA2 pessoal (além de Enterprise) no portal de configuração
 - [ ] App mobile (React Native ou PWA)
-- [ ] Controle por múltiplos relés (tomada com múltiplas saídas)
 
 ## Autores
 
 - Bruno dos Santos Lopes
-- Heitor Franco C. Linhares
+- Heitor Franco Cerceaux Linhares
