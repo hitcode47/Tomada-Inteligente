@@ -2,7 +2,11 @@
 
 Projeto desenvolvido para a disciplina de **Projeto de Sistemas Embutidos** do Curso de Graduação em Engenharia Elétrica da **Universidade Federal de Minas Gerais (UFMG)**.
 
-O EcoPlug é uma tomada inteligente capaz de medir tensão, corrente, potência e energia acumulada de um aparelho conectado, disponibilizar essas informações ao usuário por meio de uma interface web e permitir o controle remoto do acionamento (ligar/desligar). O sistema sinaliza seu estado por LEDs indicadores e suporta múltiplas tomadas simultaneamente.
+---
+
+O consumo de energia elétrica residencial é, em grande parte, invisível ao usuário final: a conta de luz mostra apenas um valor mensal agregado, sem indicar quais aparelhos são responsáveis pela maior parcela do gasto. Essa falta de visibilidade dificulta a identificação de desperdícios e a tomada de decisões conscientes sobre o uso da energia em casa.
+
+O **EcoPlug** foi criado para preencher essa lacuna. Trata-se de uma tomada inteligente que mede tensão, corrente, potência e energia acumulada de qualquer aparelho conectado, e disponibiliza essas informações em tempo real por meio de uma interface web — acessível de qualquer dispositivo na rede. O sistema também permite ligar e desligar remotamente a tomada, sinaliza seu estado por LEDs indicadores e suporta múltiplas tomadas monitoradas simultaneamente.
 
 ## Imagens
 
