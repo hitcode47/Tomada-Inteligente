@@ -12,6 +12,10 @@ Além do monitoramento, o sistema permite ligar e desligar remotamente a tomada,
 
 O hardware foi desenvolvido em torno de um ESP32, com o módulo PZEM-004T para medição elétrica, relé para controle do acionamento e um invólucro impresso em 3D. O backend roda em FastAPI com banco de dados PostgreSQL hospedado na Oracle Cloud, e o frontend foi desenvolvido em React.
 
+## Project Model Canvas
+
+![Project Model Canvas](imagens/pmc.png)
+
 ## Imagens
 
 | | |
